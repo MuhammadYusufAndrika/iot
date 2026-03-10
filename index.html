@@ -138,6 +138,31 @@ main{padding:0 20px 24px;position:relative;z-index:1;}
 /* BOTTOM 3 COLS */
 .prod-bottom{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:14px;}
 
+@media (min-width:1360px){
+  #tab-produksi{position:relative;padding-right:430px;}
+  #tab-produksi .prod-bottom{
+    position:fixed;
+    top:98px;
+    right:20px;
+    width:390px;
+    margin-top:0;
+    grid-template-columns:1fr;
+    gap:10px;
+    align-content:start;
+    z-index:40;
+  }
+  #tab-produksi .prod-bottom .widget{
+    display:flex;
+    flex-direction:column;
+    min-height:0;
+  }
+  #tab-produksi .prod-bottom .wb{
+    flex:1;
+    min-height:0;
+    overflow:auto;
+  }
+}
+
 /* PENCAPAIAN TARGET GAUGE */
 .gauge-wrap{display:flex;flex-direction:column;align-items:center;padding:8px 0 0;}
 .gauge-items{display:flex;gap:20px;margin-top:8px;}
