@@ -138,28 +138,42 @@ main{padding:0 20px 24px;position:relative;z-index:1;}
 /* BOTTOM 3 COLS */
 .prod-bottom{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:14px;}
 
-@media (min-width:1360px){
-  #tab-produksi{position:relative;padding-right:430px;}
-  #tab-produksi .prod-bottom{
-    position:fixed;
-    top:98px;
-    right:20px;
-    width:390px;
-    margin-top:0;
-    grid-template-columns:1fr;
-    gap:10px;
-    align-content:start;
-    z-index:40;
+/* PRODUKSI TWO-COLUMN LAYOUT */
+.prod-layout{display:flex;flex-direction:column;}
+.prod-main{display:flex;flex-direction:column;}
+
+@media (min-width:1280px){
+  .prod-layout{
+    display:grid;
+    grid-template-columns:1fr 390px;
+    column-gap:14px;
+    align-items:start;
   }
-  #tab-produksi .prod-bottom .widget{
+  .prod-main{
+    grid-column:1;
+    grid-row:1;
+    min-width:0;
+  }
+  .prod-bottom{
+    grid-column:2;
+    grid-row:1;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    /* offset by .sec label height (14px line + 7px pad-bottom + 1px border + 12px margin = 34px) */
+    margin-top:34px;
+    align-self:stretch;
+  }
+  /* Ringkasan Shift grows to fill remaining height — bottom aligns with Line Running */
+  .prod-bottom .widget:last-child{
+    flex:1;
     display:flex;
     flex-direction:column;
     min-height:0;
   }
-  #tab-produksi .prod-bottom .wb{
+  .prod-bottom .widget:last-child .wb{
     flex:1;
-    min-height:0;
-    overflow:auto;
+    overflow-y:auto;
   }
 }
 
@@ -175,7 +189,9 @@ main{padding:0 20px 24px;position:relative;z-index:1;}
 
 /* TICKER */
 .ticker{overflow:hidden;white-space:nowrap;border-top:1px solid var(--border);
-  background:rgba(0,212,255,0.025);padding:5px 0;margin-top:14px;}
+  background:rgba(0,212,255,0.025);padding:5px 0;margin-top:14px;
+  /* break out of .pane padding so ticker spans full panel width */
+  margin-left:-16px;margin-right:-16px;}
 .ticker-inner{display:inline-block;animation:tick 35s linear infinite;}
 @keyframes tick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 .ti{display:inline-block;margin:0 28px;font-family:'Share Tech Mono';font-size:10px;color:var(--dim);}
@@ -372,6 +388,7 @@ main{padding:0 20px 24px;position:relative;z-index:1;}
      TAB 1 — PRODUKSI
 ════════════════════════════════════════════════ -->
 <div class="view active pane" id="tab-produksi">
+<div class="prod-layout"><div class="prod-main">
 
   <!-- KPI TOP -->
   <div class="sec">KPI Produksi — Klik untuk Detail Lengkap</div>
@@ -552,6 +569,8 @@ main{padding:0 20px 24px;position:relative;z-index:1;}
     </div>
   </div>
 
+</div><!-- /prod-main -->
+
   <!-- BOTTOM 3: TARGET + TREND + STATS -->
   <div class="prod-bottom">
 
@@ -638,6 +657,7 @@ main{padding:0 20px 24px;position:relative;z-index:1;}
       </div>
     </div>
   </div>
+</div><!-- /prod-layout -->
 
   <!-- TICKER -->
   <div class="ticker">
