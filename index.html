@@ -349,6 +349,99 @@ main{padding:0 20px 24px;position:relative;z-index:1;}
 .fpill.active{border-color:var(--acc);color:var(--acc);background:rgba(0,212,255,0.07);}
 .fpill:hover:not(.active){color:var(--text);}
 
+/* ══════════════════════════════════════════════════
+   RESPONSIVE — TABLET  641–1100 px
+══════════════════════════════════════════════════ */
+@media (min-width:641px) and (max-width:1100px){
+  main{padding:0 12px 20px;}
+  .kpi-top{grid-template-columns:1fr 1fr;}
+  .oee-down-row{grid-template-columns:1fr;}
+  .prod-bottom{grid-template-columns:1fr 1fr;}
+  .mesin-grid{grid-template-columns:1fr;}
+  .sensor-grid{grid-template-columns:1fr 1fr;}
+  .modal-grid{grid-template-columns:1fr;}
+  .form-fields{grid-template-columns:1fr;}
+  .h-pills .hpill:nth-child(n+3){display:none;}
+}
+
+/* ══════════════════════════════════════════════════
+   RESPONSIVE — PHONE  ≤ 640 px
+══════════════════════════════════════════════════ */
+@media (max-width:640px){
+  /* HEADER */
+  header{height:auto;min-height:48px;padding:8px 12px;flex-wrap:wrap;row-gap:4px;}
+  .h-sub{display:none;}
+  .h-pills{display:none;}
+  .h-title{font-size:11px;letter-spacing:2px;}
+  .h-emblem{width:28px;height:28px;font-size:9px;}
+
+  /* TABS — horizontal scroll, no clip decoration */
+  .tabs{padding:6px 8px 0;overflow-x:auto;-webkit-overflow-scrolling:touch;
+        scrollbar-width:none;-ms-overflow-style:none;flex-wrap:nowrap;}
+  .tabs::-webkit-scrollbar{display:none;}
+  .tab{padding:5px 10px;font-size:9px;letter-spacing:0;white-space:nowrap;
+       flex-shrink:0;clip-path:none;}
+
+  /* MAIN */
+  main{padding:0 8px 20px;}
+  .pane{padding:10px;border-radius:0 3px 3px 3px;}
+
+  /* KPI CARDS — 2 column */
+  .kpi-top{grid-template-columns:1fr 1fr;gap:7px;}
+  .kc-val{font-size:17px;}
+  .kc-trend{font-size:8px;}
+
+  /* OEE / DOWNTIME — stack boxes, then stack inner Elemented/Nonel */
+  .oee-down-row{grid-template-columns:1fr;}
+  .oee-box .ob-inner-grid{
+    display:flex!important;flex-direction:column!important;gap:10px!important;}
+  .oee-box .ob-inner-right{
+    border-left:none!important;padding-left:0!important;
+    border-top:1px solid var(--border);padding-top:10px;}
+
+  /* TIMELINE */
+  .tl-col-header{display:none;}
+  .ltr-top{grid-template-columns:48px 60px 1fr 58px;gap:5px;}
+  .ltr-id{font-size:9px;}
+  .ltr-out{font-size:9px;}
+  .line-tl-row{padding:8px 10px;}
+  .down-lbl{width:60px;}
+
+  /* PROD BOTTOM (Pencapaian / Trend / Ringkasan) — single column */
+  .prod-bottom{grid-template-columns:1fr;gap:10px;}
+
+  /* MESIN */
+  .mesin-grid{grid-template-columns:1fr;}
+  .util-bar{width:60px;}
+
+  /* SENSOR — 2 col */
+  .sensor-grid{grid-template-columns:1fr 1fr;}
+
+  /* MATERIAL TABLE — horizontal scroll */
+  .mat-table-wrap{overflow-x:auto;}
+  .mat-table{min-width:540px;}
+  .mat-search{flex-wrap:wrap;}
+  .mat-search input{flex:none;width:100%;}
+  .mat-search select{flex:1;}
+
+  /* MESIN TABLE — horizontal scroll */
+  .mt-scroll{overflow-x:auto;}
+  .mt{min-width:620px;}
+
+  /* MODAL */
+  .modal{width:98vw;padding:12px;}
+  .modal-grid{grid-template-columns:1fr;}
+
+  /* FORM */
+  .form-fields{grid-template-columns:1fr;}
+  .form-card-head{flex-direction:column;align-items:flex-start;gap:6px;}
+  .form-meta{flex-wrap:wrap;gap:6px;}
+  .form-action-row{flex-wrap:wrap;gap:6px;}
+
+  /* TICKER — match reduced pane padding break-out */
+  .ticker{margin-left:-10px;margin-right:-10px;}
+}
+
 /* SCROLLBAR */
 ::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-track{background:var(--bg);}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
@@ -474,7 +567,7 @@ main{padding:0 20px 24px;position:relative;z-index:1;}
     </div>
 
     <!-- COLUMN HEADER -->
-    <div style="display:grid;grid-template-columns:90px 90px 1fr 100px;gap:12px;padding:6px 14px;border-bottom:1px solid var(--border);">
+    <div class="tl-col-header" style="display:grid;grid-template-columns:90px 90px 1fr 100px;gap:12px;padding:6px 14px;border-bottom:1px solid var(--border);">
       <div style="font-size:8px;color:var(--dim);letter-spacing:2px;">LINE</div>
       <div style="font-size:8px;color:var(--dim);letter-spacing:2px;">STATUS</div>
       <div style="font-size:8px;color:var(--dim);letter-spacing:2px;">TIMELINE SHIFT (07:00–15:00)</div>
