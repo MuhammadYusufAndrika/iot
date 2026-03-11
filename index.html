@@ -40,6 +40,35 @@ header{position:sticky;top:0;z-index:300;height:64px;background:rgba(4,8,15,0.97
 @keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
 .clock{font-family:'Orbitron';font-size:13px;color:var(--acc);}
 
+/* ALARM BUTTON */
+.alarm-btn{position:relative;width:40px;height:40px;background:rgba(255,57,108,0.08);border:1px solid rgba(255,57,108,0.3);border-radius:4px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;}
+.alarm-btn:hover{background:rgba(255,57,108,0.15);border-color:var(--danger);}
+.alarm-btn.active{background:rgba(255,57,108,0.2);border-color:var(--danger);}
+.alarm-icon{font-size:18px;color:var(--danger);animation:alarm-ring 2s ease-in-out infinite;}
+@keyframes alarm-ring{0%,100%{transform:rotate(0deg);}10%{transform:rotate(-15deg);}20%{transform:rotate(15deg);}30%{transform:rotate(-10deg);}40%{transform:rotate(10deg);}50%{transform:rotate(0deg);}}
+.alarm-badge{position:absolute;top:-4px;right:-4px;background:var(--danger);color:#fff;font-family:'Orbitron';font-size:9px;font-weight:700;min-width:18px;height:18px;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:0 4px;box-shadow:0 0 8px var(--danger);animation:blink 1.5s infinite;}
+
+/* ALARM DROPDOWN PANEL */
+.alarm-panel{position:absolute;top:70px;right:20px;width:380px;max-height:520px;background:var(--panel);border:1px solid var(--border2);border-radius:6px;box-shadow:0 8px 24px rgba(0,0,0,0.6);z-index:600;display:none;overflow:hidden;}
+.alarm-panel.open{display:flex;flex-direction:column;animation:slideDown 0.2s ease-out;}
+@keyframes slideDown{from{opacity:0;transform:translateY(-10px);}to{opacity:1;transform:translateY(0);}}
+.ap-header{padding:12px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.ap-title{font-family:'Orbitron';font-size:11px;letter-spacing:2px;color:var(--acc);font-weight:700;}
+.ap-clear{font-size:9px;color:var(--dim);cursor:pointer;padding:3px 8px;border:1px solid var(--border);border-radius:3px;transition:all 0.2s;font-family:'Share Tech Mono';}
+.ap-clear:hover{color:var(--acc);border-color:var(--acc);}
+.ap-body{overflow-y:auto;max-height:450px;}
+.alarm-item{padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.04);display:flex;gap:10px;transition:background 0.2s;cursor:pointer;}
+.alarm-item:hover{background:rgba(0,212,255,0.02);}
+.alarm-item:last-child{border:none;}
+.ai-icon{width:32px;height:32px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.ai-icon.critical{background:rgba(255,57,108,0.15);color:var(--danger);border:1px solid rgba(255,57,108,0.3);}
+.ai-icon.warning{background:rgba(255,202,40,0.15);color:var(--warn);border:1px solid rgba(255,202,40,0.3);}
+.ai-icon.info{background:rgba(0,212,255,0.15);color:var(--acc);border:1px solid rgba(0,212,255,0.3);}
+.ai-content{flex:1;min-width:0;}
+.ai-title{font-size:10px;font-weight:600;margin-bottom:2px;color:var(--text);}
+.ai-desc{font-size:9px;color:var(--dim);line-height:1.4;margin-bottom:3px;}
+.ai-time{font-size:8px;color:var(--dim);font-family:'Share Tech Mono';}
+
 /* ── TABS ── */
 .tabs{display:flex;gap:2px;padding:8px 20px 0;position:relative;z-index:1;}
 .tab{padding:5px 14px;background:var(--panel);border:1px solid var(--border);border-bottom:none;
@@ -472,10 +501,25 @@ main{padding:0 20px 8px;position:relative;z-index:1;height:calc(100vh - 72px);ov
     <div class="hpill"><div class="lbl">Status Safety</div><div class="val" style="color:var(--acc2)">AMAN</div></div>
   </div>
   <div class="h-right">
+    <div class="alarm-btn" id="alarmBtn" onclick="toggleAlarm()">
+      <div class="alarm-icon">🔔</div>
+      <div class="alarm-badge" id="alarmBadge">5</div>
+    </div>
     <div class="live-pill"><div class="ldot"></div>LIVE</div>
     <div class="clock" id="clk"></div>
   </div>
 </header>
+
+<!-- ALARM DROPDOWN PANEL -->
+<div class="alarm-panel" id="alarmPanel">
+  <div class="ap-header">
+    <div class="ap-title">⚠ NOTIFIKASI ALARM</div>
+    <div class="ap-clear" onclick="clearAllAlarms()">CLEAR ALL</div>
+  </div>
+  <div class="ap-body" id="alarmList">
+    <!-- Alarm items will be inserted here by JavaScript -->
+  </div>
+</div>
 
 <!-- ── TABS ── -->
 <div class="tabs">
@@ -1159,6 +1203,75 @@ main{padding:0 20px 8px;position:relative;z-index:1;height:calc(100vh - 72px);ov
 </div>
 
 <script>
+// ── ALARM SYSTEM ──────────────────────────
+let alarms = [
+  {id:1, type:'critical', icon:'🔴', title:'Stock Kritis — Black Powder', desc:'KE-009 Black Powder stok 9 kg, di bawah safety stock 15 kg. Segera lakukan pemesanan!', time:'2 menit lalu', action:()=>showStockDetail('KE-009','Black Powder',9,15,'kg')},
+  {id:2, type:'critical', icon:'🔴', title:'Stock Kritis — Cap Cover', desc:'KO-013 Cap Cover stok 7,200 pcs, di bawah safety stock 8,000. Perlu reorder segera.', time:'5 menit lalu', action:()=>showStockDetail('KO-013','Cap Cover',7200,8000,'pcs')},
+  {id:3, type:'warning', icon:'⚠️', title:'Machine Downtime — Connector Assembly', desc:'N-03 Connector Assembly mengalami downtime 94 menit, melebihi batas 60 menit.', time:'12 menit lalu', action:null},
+  {id:4, type:'warning', icon:'🟡', title:'Reorder Point — Leg Wire 2m', desc:'KO-003 Leg Wire 2m mencapai reorder point. Stok 12,000 dari safety 18,000.', time:'28 menit lalu', action:()=>showStockDetail('KO-003','Leg Wire 2m',12000,18000,'pcs')},
+  {id:5, type:'info', icon:'🔵', title:'Production Target 86.9%', desc:'Elemented hari ini 7,820 pcs dari target 9,000 pcs. Perlu akselerasi untuk catch up.', time:'1 jam lalu', action:()=>openModal()},
+];
+
+function toggleAlarm(){
+  const panel = document.getElementById('alarmPanel');
+  const btn = document.getElementById('alarmBtn');
+  const isOpen = panel.classList.contains('open');
+  
+  if(isOpen){
+    panel.classList.remove('open');
+    btn.classList.remove('active');
+  } else {
+    panel.classList.add('open');
+    btn.classList.add('active');
+    renderAlarms();
+  }
+}
+
+function renderAlarms(){
+  const list = document.getElementById('alarmList');
+  const badge = document.getElementById('alarmBadge');
+  
+  badge.textContent = alarms.length;
+  badge.style.display = alarms.length > 0 ? 'flex' : 'none';
+  
+  if(alarms.length === 0){
+    list.innerHTML = '<div style="padding:40px 20px;text-align:center;color:var(--dim);font-size:10px;">✓ Tidak ada alarm aktif<br><span style="font-size:9px;margin-top:6px;display:block;">Semua sistem berjalan normal</span></div>';
+    return;
+  }
+  
+  list.innerHTML = alarms.map(a => `
+    <div class="alarm-item" onclick="${a.action ? a.action.toString().match(/=>(.+)/)[1] : ''}">
+      <div class="ai-icon ${a.type}">${a.icon}</div>
+      <div class="ai-content">
+        <div class="ai-title">${a.title}</div>
+        <div class="ai-desc">${a.desc}</div>
+        <div class="ai-time">${a.time}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function clearAllAlarms(){
+  if(confirm('Hapus semua notifikasi alarm?')){
+    alarms = [];
+    renderAlarms();
+    toggleAlarm();
+  }
+}
+
+// Close alarm panel when clicking outside
+document.addEventListener('click', function(e){
+  const panel = document.getElementById('alarmPanel');
+  const btn = document.getElementById('alarmBtn');
+  if(panel && btn && !panel.contains(e.target) && !btn.contains(e.target)){
+    panel.classList.remove('open');
+    btn.classList.remove('active');
+  }
+});
+
+// Initialize alarms on page load
+renderAlarms();
+
 // ── CLOCK ─────────────────────────────────
 function tick(){
   const n=new Date();
